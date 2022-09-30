@@ -58,7 +58,9 @@ public class LogAspect {
             log.debug("response: {}",response);
             log.debug("operation log: {}",operationLog);
             BaseResponse<?> saveRes = logService.saveOperationLog(operationLog);
-            log.error("save operation log result: {}", saveRes);
+            if(ResponseCodeConstant.STATUS_FAIL.equals(saveRes.getStatus())){
+                log.error("save operation log error: {}", saveRes.getMsg());
+            }
 
         }
         return joinPoint.proceed(args);
