@@ -28,12 +28,12 @@ public class LogAspect {
     private LogService logService;
 
     //扫描所有方法带有LogPointCut注解的方法为切点
-    @Pointcut("@annotation(com.fkp.annotation.LogPointCut)")
-    public void log(){
+    @Pointcut("@within(logAnnotation) || @annotation(logAnnotation)")
+    public void log(LogPointCut logAnnotation){
     }
 
     //定义切面
-    @Around("log() && @annotation(logAnnotation)")
+    @Around(value = "log(logAnnotation)", argNames = "joinPoint,logAnnotation")
     public Object run(ProceedingJoinPoint joinPoint, LogPointCut logAnnotation) throws Throwable {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         Object[] args = joinPoint.getArgs();
@@ -41,8 +41,12 @@ public class LogAspect {
             HttpServletRequest request = attributes.getRequest();
             String uri = request.getRequestURI();
             String token = request.getHeader(GlobalConstant.TOKEN);
-            String operationCode = logAnnotation.operationCode();
-            String operationDesc = logAnnotation.operationDesc();
+            String operationCode = joinPoint.getSignature().getName();
+            String operationDesc = joinPoint.getSignature().getName();
+            if(logAnnotation != null){
+                operationCode = logAnnotation.operationCode();
+                operationDesc = logAnnotation.operationDesc();
+            }
             OperationLog operationLog = new OperationLog();
             operationLog.setOperationCode(operationCode);
             operationLog.setOperationDesc(operationDesc);
