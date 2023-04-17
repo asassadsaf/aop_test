@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @Order(1)
-public class AMyAspect2 {
+public class MyAspect2 {
 
     /**
      * 定义切点
@@ -87,7 +87,7 @@ public class AMyAspect2 {
      */
     @Around(value = "myPointCut()")
     public Object aroundAdvice(ProceedingJoinPoint joinPoint) throws Throwable {
-        log.info("----------------------------Around----------------------------");
+        log.info("----------------------------Around Before----------------------------");
         //拿到目标方法参数列表
         Object[] args = joinPoint.getArgs();
         log.info("method args: {}",args);
@@ -99,6 +99,7 @@ public class AMyAspect2 {
         }
         //执行目标方法并传入参数
         Object response = joinPoint.proceed(args);
+        log.info("----------------------------Around After----------------------------");
         log.info("target method result: {}", response);
 
         //若已知返回值的类型可以进行强转并获取其中的属性值
