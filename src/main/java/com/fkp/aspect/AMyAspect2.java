@@ -1,8 +1,5 @@
 package com.fkp.aspect;
 
-import com.alibaba.fastjson.JSON;
-import com.fkp.controller.TargetTestController;
-import com.fkp.entity.User;
 import com.fkp.exception.BusinessException;
 import com.fkp.param.BaseResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -10,22 +7,25 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.*;
-import org.aspectj.lang.reflect.SourceLocation;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 切面类，需要加入到容器中
+ * 多个Aspect执行顺序：
+ *      1.无任何附加操作，默认情况下，按照bean名称字母排序
+ *      2.通过@Order指定顺序，值越小优先级越高，默认值为Integer最大值，即优先级最低，若两个或多个Order值相同则又会按照bean名称字母排序
+ * 单个Aspect中各类型切面执行顺序
+ *      Around(执行目标方法前部分)   ->   Before   ->   AfterReturning(正常返回)/AfterThrowing(抛出异常)   ->   After   ->   Around(执行目标方法后部分)
+ * 多个Aspect中各类型切面执行顺序：例有两个切面A1,A2，优先级A1 > A2
+ *      A1.Around(执行目标方法前部分)  ->  A1.Before  ->  A2.Around(执行目标方法前部分)  ->  A2.Before  ->  A2.AfterReturning(正常返回)/AfterThrowing(抛出异常)  ->  A2.After  ->  A2.Around(执行目标方法后部分)  ->  A1.AfterReturning(正常返回)/AfterThrowing(抛出异常)  ->  A1.After  ->  A1.Around(执行目标方法后部分)
+ *
  */
 @Aspect
 @Component
 @Slf4j
 @Order(1)
-public class MyAspect {
+public class AMyAspect2 {
 
     /**
      * 定义切点

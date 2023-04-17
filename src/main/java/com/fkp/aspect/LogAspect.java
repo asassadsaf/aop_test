@@ -19,7 +19,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 
-@Aspect
+//@Aspect
 @Component
 @Slf4j
 public class LogAspect {
